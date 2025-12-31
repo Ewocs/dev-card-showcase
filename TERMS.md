@@ -2,7 +2,7 @@
 
 ## Community Card Showcase - Terms of Use
 
-**Last Updated:** December 2024
+**Last Updated:** December 2025
 
 ### 1. Acceptance of Terms
 By contributing to this project, you agree to these terms and conditions.
