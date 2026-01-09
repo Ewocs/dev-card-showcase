@@ -106,6 +106,25 @@
         <i class="fas fa-th-large"></i>
     </button>
 </div>
+<div class="search-filter-container">
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="Search projects, tech, or contributor..."
+    />
+
+    <div class="filter-buttons">
+        <button class="filter-btn active" data-tech="all">All</button>
+        <button class="filter-btn" data-tech="html">HTML</button>
+        <button class="filter-btn" data-tech="css">CSS</button>
+        <button class="filter-btn" data-tech="javascript">JavaScript</button>
+    </div>
+
+    <select id="sortSelect" class="sort-select">
+        <option value="az">A–Z</option>
+        <option value="za">Z–A</option>
+    </select>
+</div>
 
 
 <!-- PROJECTS GRID -->
@@ -139,8 +158,35 @@
         </div>
     </div>
     <!-- END PROJECT CARD -->
-
     <!-- 👇 CONTRIBUTORS ADD NEW PROJECTS BELOW 👇 -->
+     <div class="project-card">
+    <h2>Number Guessing Game</h2>
+
+    <p class="project-desc">
+        An interactive number guessing game where users try to guess a secret number
+        between 1 and 100 with limited attempts, real-time feedback, and helpful hints.
+    </p>
+
+    <div class="project-tags">
+        <span>HTML</span>
+        <span>CSS</span>
+        <span>JavaScript</span>
+    </div>
+
+    <div class="project-links">
+        <a href="./projects/Number_Guessing_Game/" target="_blank">
+            <i class="fab fa-github"></i> GitHub
+        </a>
+        <a href="./projects/Number_Guessing_Game/index.html" target="_blank">
+            <i class="fas fa-external-link-alt"></i> Live
+        </a>
+    </div>
+
+    <div class="project-footer">
+        <span>By</span>
+        <a href="https://github.com/Sneha-Amballa" target="_blank">Amballa Sneha</a>
+    </div>
+</div>
 
 </section>
 
@@ -173,6 +219,64 @@ viewToggleBtn.addEventListener("click", () => {
         ? '<i class="fas fa-th-list"></i>'
         : '<i class="fas fa-th-large"></i>';
 });
+</script>
+<script>
+const searchInput = document.getElementById("searchInput");
+const filterButtons = document.querySelectorAll(".filter-btn");
+const sortSelect = document.getElementById("sortSelect");
+const projects = Array.from(document.querySelectorAll(".project-card"));
+
+let activeFilter = "all";
+
+// 🔍 Search
+searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase();
+    filterProjects(query, activeFilter);
+});
+
+// 🏷 Filter
+filterButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        filterButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeFilter = btn.dataset.tech;
+        filterProjects(searchInput.value.toLowerCase(), activeFilter);
+    });
+});
+
+// 🔃 Sort
+sortSelect.addEventListener("change", () => {
+    const sorted = projects.sort((a, b) => {
+        const nameA = a.querySelector("h2").innerText.toLowerCase();
+        const nameB = b.querySelector("h2").innerText.toLowerCase();
+        return sortSelect.value === "az"
+            ? nameA.localeCompare(nameB)
+            : nameB.localeCompare(nameA);
+    });
+
+    const container = document.querySelector(".projects-container");
+    sorted.forEach(card => container.appendChild(card));
+});
+
+// 🧠 Filter Logic
+function filterProjects(query, tech) {
+    projects.forEach(card => {
+        const title = card.querySelector("h2").innerText.toLowerCase();
+        const tags = card.querySelector(".project-tags").innerText.toLowerCase();
+        const author = card.querySelector(".project-footer").innerText.toLowerCase();
+
+        const matchesSearch =
+            title.includes(query) ||
+            tags.includes(query) ||
+            author.includes(query);
+
+        const matchesTech =
+            tech === "all" || tags.includes(tech);
+
+        card.style.display =
+            matchesSearch && matchesTech ? "flex" : "none";
+    });
+}
 </script>
 
 <script>
