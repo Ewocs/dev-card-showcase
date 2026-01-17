@@ -13,7 +13,7 @@
 
 <body>
 
-              <div class="circle-container">
+    <div class="circle-container">
         <div class="circle"></div>
         <div class="circle"></div>
         <div class="circle"></div>
@@ -742,11 +742,52 @@
             </div>
         </div>
 
+        <div class="card">
+            <div class="card-inner">
+                <img src="https://github.com/vxnxhika-73.png" alt=" Vanshika Photo" class="card-img">
+                <h2>Vanshika Soni</h2>
+                <span class="role">Contributor</span>
+                <p> passionate about web development </p>
+                <a href="https://github.com/vxnxhika-73" class="card-btn" target="_blank"> View GitHub Profile</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-inner">
+                <img src="images/Nidhisharora.jpg" alt="Nidhisharora's Photo" class="card-img">
+                <h2>Nidhish Arora</h2>
+                <span class="role">Open Source Enthusiast</span>
+                <p>"Hello World! This is my first pull request."</p>
+                <a href="https://github.com/Nidhisharora" class="card-btn" target="_blank">Github</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-inner">
+                <img src="images/sohaibkhan.png" alt="User Photo" class="card-img">
+                <h2>Muhammad Sohaib</h2>
+                <span class="role">Software Engineer</span>
+                <p>Coding is my craft; I transform ideas into real-world applications.</p>
+                <a href="https://github.com/sohaibkundi2" class="card-btn" target="_blank">View Github</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-inner">
+                <img src="images/Rishabh.jpg" alt="User Photo" class="card-img">
+                <h2>Rishabh Mishra</h2>
+                <span class="role">Developer</span>
+                <p>"Passionate learner crafting solutions in the Open Source universe.""</p>
+                <a href="https://github.com/rishabh0510rishabh" class="card-btn" target="_blank">View Profile</a>
+            </div>
+        </div>
+
         
         <!-- ADD YOUR NEW CARD ABOVE THIS COMMENT -->
 
     </div> <!-- End of card-container -->
 
+    
     <!-- FOOTER START -->
     <footer class="footer">
         <div class="footer-social">
@@ -771,6 +812,66 @@
     <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">
         <i class="fas fa-arrow-up"></i>
     </button>
+
+    <!-- Crown Button (Contributor of the Day) -->
+<button id="crownBtn" class="crown-btn" title="Contributor of the Day">
+    <i class="fas fa-crown"></i>
+</button>
+
+<!-- Contributor of the Day Modal -->
+<div id="contributorModal" class="contributor-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="crown-icon-large">👑</div>
+            <h3>🌟 Contributor of the Day</h3>
+            <p class="modal-subtitle">Randomly selected contributor gets special recognition!</p>
+            <button id="closeModal" class="close-modal">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="spotlight-card" id="spotlightCard">
+                <!-- Dynamic content will be loaded here -->
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Loading today's featured contributor...</p>
+                </div>
+            </div>
+            
+            <div class="spotlight-info">
+                <div class="info-item">
+                    <i class="fas fa-calendar-day"></i>
+                    <div>
+                        <strong>Updates Daily</strong>
+                        <span>Changes every 24 hours</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-random"></i>
+                    <div>
+                        <strong>Random Selection</strong>
+                        <span>Equal chance for all contributors</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <strong>Community Recognition</strong>
+                        <span>Celebrating our contributors</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button id="refreshSpotlight" class="refresh-btn">
+                <i class="fas fa-redo-alt"></i> Refresh Selection
+            </button>
+            <button id="viewAllBtn" class="view-all-btn">
+                <i class="fas fa-th-large"></i> View All Cards
+            </button>
+        </div>
+    </div>
+</div>
 
     <script>
 
@@ -1271,6 +1372,308 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         document.head.appendChild(style);
     </script>
+<script>
+    // Contributor of the Day Feature
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM Elements
+        const crownBtn = document.getElementById('crownBtn');
+        const contributorModal = document.getElementById('contributorModal');
+        const closeModal = document.getElementById('closeModal');
+        const spotlightCard = document.getElementById('spotlightCard');
+        const refreshBtn = document.getElementById('refreshSpotlight');
+        const viewAllBtn = document.getElementById('viewAllBtn');
+        
+        // Storage keys
+        const SPOTLIGHT_KEY = 'devCardSpotlight';
+        const SPOTLIGHT_DATE_KEY = 'spotlightDate';
+        
+        // Initialize
+        initContributorOfTheDay();
+        
+        function initContributorOfTheDay() {
+            // Setup event listeners
+            crownBtn.addEventListener('click', openModal);
+            closeModal.addEventListener('click', closeModalWindow);
+            refreshBtn.addEventListener('click', refreshSpotlight);
+            viewAllBtn.addEventListener('click', scrollToCards);
+            
+            // Close modal when clicking outside
+            contributorModal.addEventListener('click', function(e) {
+                if (e.target === contributorModal) {
+                    closeModalWindow();
+                }
+            });
+            
+            // Close with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && contributorModal.style.display === 'block') {
+                    closeModalWindow();
+                }
+            });
+            
+            // Load today's spotlight on page load
+            loadTodaysSpotlight();
+        }
+        
+        function openModal() {
+            contributorModal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+            
+            // Ensure content is loaded
+            loadTodaysSpotlight();
+            
+            // Add opening animation class
+            setTimeout(() => {
+                contributorModal.classList.add('modal-open');
+            }, 10);
+        }
+        
+        function closeModalWindow() {
+            contributorModal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
+            contributorModal.classList.remove('modal-open');
+        }
+        
+        function getTodaysDate() {
+            const today = new Date();
+            return today.toDateString(); // Format: "Mon Jan 17 2026"
+        }
+        
+        function shouldRefreshSpotlight() {
+            const lastDate = localStorage.getItem(SPOTLIGHT_DATE_KEY);
+            const today = getTodaysDate();
+            
+            return lastDate !== today;
+        }
+        
+        function selectRandomContributor() {
+            // Get all cards except admin and template
+            const allCards = document.querySelectorAll('.card');
+            const eligibleCards = Array.from(allCards).filter((card, index) => {
+                const h2 = card.querySelector('h2');
+                return h2 && 
+                       !h2.textContent.includes('Project Admin') && 
+                       !h2.textContent.includes('Contributor Name') &&
+                       card.querySelector('.card-btn'); // Must have a link
+            });
+            
+            if (eligibleCards.length === 0) {
+                console.error('No eligible cards found for spotlight');
+                return null;
+            }
+            
+            // Random selection
+            const randomIndex = Math.floor(Math.random() * eligibleCards.length);
+            return eligibleCards[randomIndex];
+        }
+        
+        function loadTodaysSpotlight() {
+            const today = getTodaysDate();
+            const storedData = localStorage.getItem(SPOTLIGHT_KEY);
+            
+            let selectedCard;
+            
+            // Check if we need to select a new contributor
+            if (shouldRefreshSpotlight() || !storedData) {
+                selectedCard = selectRandomContributor();
+                
+                if (selectedCard) {
+                    // Save selection
+                    const spotlightData = {
+                        date: today,
+                        html: selectedCard.innerHTML,
+                        name: selectedCard.querySelector('h2').textContent,
+                        role: selectedCard.querySelector('.role').textContent,
+                        image: selectedCard.querySelector('img')?.src || '',
+                        link: selectedCard.querySelector('.card-btn')?.href || '#'
+                    };
+                    
+                    localStorage.setItem(SPOTLIGHT_KEY, JSON.stringify(spotlightData));
+                    localStorage.setItem(SPOTLIGHT_DATE_KEY, today);
+                }
+            } else {
+                // Use stored data
+                const spotlightData = JSON.parse(storedData);
+                
+                // Find the card in the DOM to get current state
+                const allCards = document.querySelectorAll('.card');
+                selectedCard = Array.from(allCards).find(card => {
+                    const name = card.querySelector('h2')?.textContent;
+                    return name === spotlightData.name;
+                }) || null;
+            }
+            
+            // Update UI
+            updateSpotlightUI(selectedCard);
+        }
+        
+        function updateSpotlightUI(selectedCard) {
+            if (!selectedCard) {
+                spotlightCard.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Unable to load today's featured contributor.</p>
+                        <p>Please try again later.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Clear any previous spotlight highlights
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.remove('todays-spotlight');
+            });
+            
+            // Highlight the selected card
+            selectedCard.classList.add('todays-spotlight');
+            
+            // Extract card data
+            const cardImg = selectedCard.querySelector('.card-img')?.src || 'images/user.png';
+            const cardName = selectedCard.querySelector('h2')?.textContent || 'Unknown Contributor';
+            const cardRole = selectedCard.querySelector('.role')?.textContent || 'Contributor';
+            const cardQuote = selectedCard.querySelector('p')?.textContent || 'Happy to contribute!';
+            const cardLink = selectedCard.querySelector('.card-btn')?.href || '#';
+            
+            // Update modal content
+            spotlightCard.innerHTML = `
+                <div class="card">
+                    <img src="${cardImg}" alt="${cardName}" class="card-img">
+                    <h2>${cardName}</h2>
+                    <span class="role">${cardRole}</span>
+                    <p>"${cardQuote}"</p>
+                    <a href="${cardLink}" class="card-btn" target="_blank">
+                        <i class="fab fa-github"></i> View Profile
+                    </a>
+                </div>
+            `;
+        }
+        
+        function refreshSpotlight() {
+            // Force new selection
+            localStorage.removeItem(SPOTLIGHT_KEY);
+            localStorage.removeItem(SPOTLIGHT_DATE_KEY);
+            
+            // Show loading state
+            spotlightCard.innerHTML = `
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Selecting new contributor...</p>
+                </div>
+            `;
+            
+            // Select and display new contributor after delay
+            setTimeout(() => {
+                const selectedCard = selectRandomContributor();
+                updateSpotlightUI(selectedCard);
+                
+                // Show success message
+                showToast('New contributor selected!');
+            }, 1000);
+        }
+        
+        function scrollToCards() {
+            closeModalWindow();
+            
+            // Scroll to card container with smooth animation
+            const cardContainer = document.querySelector('.card-container');
+            if (cardContainer) {
+                cardContainer.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+                // Highlight the spotlight card briefly
+                const spotlightCard = document.querySelector('.card.todays-spotlight');
+                if (spotlightCard) {
+                    spotlightCard.style.animation = 'none';
+                    setTimeout(() => {
+                        spotlightCard.style.animation = 'pulseBorder 2s infinite';
+                    }, 10);
+                }
+            }
+        }
+        
+        function showToast(message) {
+            // Check current theme
+            const isDarkTheme = document.body.getAttribute('data-theme') === 'dark';
+            
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.textContent = message;
+            
+            // Set styles based on theme
+            const toastStyles = `
+                position: fixed;
+                bottom: 150px;
+                right: 20px;
+                background: ${isDarkTheme ? '#4CAF50' : '#2E7D32'};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 25px;
+                z-index: 1000;
+                animation: toastSlideIn 0.3s ease;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                font-weight: 500;
+                font-size: 0.95rem;
+                border: none;
+                max-width: 300px;
+                text-align: center;
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            `;
+            
+            toast.style.cssText = toastStyles;
+            
+            document.body.appendChild(toast);
+            
+            // Remove toast after 3 seconds
+            setTimeout(() => {
+                toast.style.animation = 'toastSlideOut 0.3s ease';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+        // Add toast animations to style
+        const toastStyleElement = document.createElement('style');
+        toastStyleElement.textContent = `
+            @keyframes toastSlideIn {
+                from {
+                    transform: translateX(100%) translateY(20px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0) translateY(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes toastSlideOut {
+                from {
+                    transform: translateX(0) translateY(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%) translateY(20px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(toastStyleElement);
+        
+        // Optional: Debug function (can be called from console)
+        window.debugSpotlight = function() {
+            console.log('Current spotlight data:', localStorage.getItem(SPOTLIGHT_KEY));
+            console.log('Last updated:', localStorage.getItem(SPOTLIGHT_DATE_KEY));
+            console.log('Today:', getTodaysDate());
+            console.log('Should refresh?', shouldRefreshSpotlight());
+        };
+    });
+</script>
 </body>
 
 </html>
