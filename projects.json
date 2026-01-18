@@ -114,6 +114,22 @@
                    }
     },
     {
+        "title":  "Mini Geo Guesser",
+        "description":  "A fun game where you have to guess a location off of famous landscape pictures shown to you along with some hints ",
+        "tags":  [
+                     "HTML",
+                     "CSS",
+                     "JavaScript"
+                 ],
+        "links":  {
+                      "live":  "./projects/Enhanced geo guesser/index.html"
+                  },
+        "author":  {
+                       "name":  "CodeMaster",
+                       "github":  "https://github.com/CodeMaster11000"
+                   }
+    },
+    {
         "title":  "Smart Progress Tracker",
         "description":  "A smart progress tracking tool that helps users monitor tasks and goals using dynamic progress bars, priority levels, due dates, and persistent storage, all presented in a clean card-based interface.",
         "tags":  [
@@ -1502,6 +1518,50 @@
     "name": "PavanKarthik",
     "github": "https://github.com/pavanakarthik12"
   }
+},
+{
+  "title": "Healthy Screen Time & Digital Balance 🧘‍♂️",
+  "description": "An awareness page that educates users about healthy screen-time habits and maintaining digital balance.",
+  "tags": [
+    "HTML",
+    "CSS",
+    "Awareness",
+    "Digital Wellbeing",
+    "Health"
+  ],
+  "links": {
+    "live": "./projects/healthy-screen-time-awareness/index.html"
+  "title": "Healthy Study Habits Checklist ✅",
+  "description": "An interactive checklist that helps students track and build healthy study habits.",
+  "title": "Exam Stress Awareness 🌱",
+  "description": "An educational page that helps students understand exam stress and manage anxiety healthily.",
+  "title": "Visual Daily Routine Planner ⏰",
+  "description": "A modern, student-friendly daily planner with time blocks, editable tasks, and clean UI.",
+  "tags": [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "Productivity",
+    "Student Wellness"
+  ],
+  "links": {
+    "live": "./projects/healthy-study-habits-checklist/index.html"
+    "Awareness",
+    "Student Wellness"
+  ],
+  "links": {
+    "live": "./projects/exam-stress-awareness/index.html"
+    "UI/UX",
+    "Productivity"
+  ],
+  "links": {
+    "live": "./projects/daily-routine-planner/index.html"
+  },
+  "author": {
+    "name": "Sneha Amballa",
+    "github": "https://github.com/your-github-username"
+  }
 }
+
 
 ]
